@@ -6,27 +6,26 @@ export async function POST(req) {
     const { email, code } = await req.json(); // Get email and code from request
 
     // Create a transporter
-    const transport = await nodemailer.createTransport({
-        service: 'SendGrid', // For Mailgun, set 'host' and 'port' instead
-        auth: {
-          user: 'apikey', // for SendGrid, 'user' is 'apikey'
-          pass: process.env.SENDGRID_API_KEY, // set this API key as an environment variable
-        },
-      });
+    const transport = nodemailer.createTransport({
+      host: "smtp.sendgrid.net",
+      port: 587,
+      auth: {
+        user: "apikey", // This is the literal string 'apikey'
+        pass: process.env.SENDGRID_API_KEY, // Your SendGrid API key
+      },
+    });
 
-      const receiver = {
-        from: process.env.EMAIL_USER,
-        to: email,
-        subject: 'SynapseCode | Verification Code',
-        headers: {
-          'List-Unsubscribe': `<mailto:${process.env.EMAIL_USER}>`,
-        },
-        html: `
+    const mailOptions = {
+      from: '"Harsh" <giri64563@gmail.com>', // Verified sender
+      replyTo: "giri64563@gmail.com", // Verified reply-to
+      to: email,
+      subject: "SynapseCode | Verification Code",
+      html: `
         <!DOCTYPE html>
         <html lang="en">
           <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <meta charset="UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
             <title>Verification Code</title>
           </head>
           <body style="font-family: Arial, sans-serif;">
@@ -37,22 +36,25 @@ export async function POST(req) {
               <p>Please enter this code on the website to verify your email.</p>
               <p>Thank you!</p>
               <p style="font-size: 12px; color: gray;">
-                Stealthify | Your Company Address | <a href="mailto:${process.env.EMAIL_USER}">Contact Support</a>
+                SynapseCode | N-20/A, Amar Market, Sourabh Vihar, Jaitpur, Badarpur, New Delhi, 110044 IND | <a href="mailto:giri64563@gmail.com">Contact Support</a>
               </p>
               <p style="font-size: 12px; color: gray;">If you didn’t request this, please ignore this email.</p>
             </div>
           </body>
         </html>
-        `,
-      };
-      
-      const result = await transport.sendMail(receiver);
-    if(result.rejected.length > 0){
-        return NextResponse.json({ success: false, message: "Verification email not sent!" });
+      `,
+    };
+
+    const result = await transport.sendMail(mailOptions);
+
+    if (result.rejected.length > 0) {
+      return NextResponse.json({ success: false, message: "Verification email not sent!" });
     }
-    console.log ("iam in send emai -api")
+
+    console.log("Email sent successfully");
     return NextResponse.json({ success: true, message: "Verification email sent!" });
   } catch (error) {
+    console.error("Error sending email:", error);
     return NextResponse.json({ success: false, message: error.message }, { status: 500 });
   }
 }

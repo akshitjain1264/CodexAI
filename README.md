@@ -1,4 +1,4 @@
-# ⚡SynapseCode - AI Assisted Code Editor with Real-Time Collaboration
+# ⚡Codex AI - AI Assisted Code Editor with Real-Time Collaboration
 
 ## Overview
 
@@ -92,5 +92,5 @@ SynapseCode meets these needs by integrating advanced AI capabilities with robus
 
 1. **Clone the Repository:**
    ```bash
-   git clone https://github.com/Abhi13-02/Haxplore.git
-   cd Haxplore
+   git clone https://github.com/akshitjain1264/codex-ai
+   cd codex-ai
